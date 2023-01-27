@@ -1,4 +1,4 @@
-package com.adservio.hrfilter.model;
+package com.adservio.hrfilter.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,7 +28,4 @@ public class Response {
 	public String getResponseText() {
 		return responseText;
 	}
-	
-	
-	
 }

@@ -1,4 +1,4 @@
-package com.adservio.hrfilter.model;
+package com.adservio.hrfilter.data.model;
 
 import java.util.ArrayList;
 import java.util.List;

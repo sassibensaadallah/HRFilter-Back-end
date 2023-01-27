@@ -1,8 +1,9 @@
 package com.adservio.hrfilter.dto;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.adservio.hrfilter.data.model.Question;
 import com.adservio.hrfilter.enums.QuestionLevel;
-import com.adservio.hrfilter.model.Question;
 
 public class QuestionDTO {
 	private String skill;

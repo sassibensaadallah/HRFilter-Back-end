@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.adservio.hrfilter.data.model.Question;
 import com.adservio.hrfilter.dto.QuestionDTO;
 import com.adservio.hrfilter.enums.QuestionLevel;
-import com.adservio.hrfilter.model.Question;
 import com.adservio.hrfilter.repository.QuestionRepository;
 import com.adservio.hrfilter.service.IQuestionService;
 

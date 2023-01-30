@@ -23,18 +23,20 @@ public class ResumeData {
 	private Long resumeId;
 	private List<String>certifications=new ArrayList<>();
 	private List<String>languages=new ArrayList<>();
-	private List<String>skills=new ArrayList<>();
+	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personId", referencedColumnName = "personId")
 	private PersonData personData ;
 	
-	@OneToMany(mappedBy="resumeData",fetch = FetchType.EAGER)
+	@OneToMany(mappedBy="resumeData",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	private List<EmployerData> employerList=new ArrayList<>();
 	
+	@OneToMany(mappedBy="resumeData",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	private List<SkillDataModel>skills=new ArrayList<>();
 	//HighestDegree from education
 	private String highestDegree;
 	
-	@OneToMany(mappedBy="resumeData",fetch = FetchType.EAGER)
+	@OneToMany(mappedBy="resumeData",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	private List<EducationData> educationList=new ArrayList<>();
 
 	public Long getResumeId() {
@@ -61,12 +63,15 @@ public class ResumeData {
 		this.languages = languages;
 	}
 
-	public List<String> getSkills() {
+	public List<SkillDataModel> getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<String> skills) {
+	public void setSkills(List<SkillDataModel> skills) {
 		this.skills = skills;
+		for(SkillDataModel skillData:skills) {
+			skillData.setResumeData(this);
+		}
 	}
 
 	public PersonData getPersonData() {
@@ -83,6 +88,9 @@ public class ResumeData {
 
 	public void setEmployerList(List<EmployerData> employerList) {
 		this.employerList = employerList;
+		for(EmployerData employerData:employerList) {
+			employerData.setResumeData(this);
+		}
 	}
 
 	public String getHighestDegree() {
@@ -99,6 +107,9 @@ public class ResumeData {
 
 	public void setEducationList(List<EducationData> educationList) {
 		this.educationList = educationList;
+		for(EducationData educationData:educationList) {
+			educationData.setResumeData(this);
+		}
 	}
 	
 	

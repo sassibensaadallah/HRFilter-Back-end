@@ -10,5 +10,5 @@ import com.adservio.hrfilter.enums.QuestionLevel;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-	public List<Question> findBySkillAndQuestionLevel(String skill, QuestionLevel level);
+	public List<Question> findBySkillIgnoreCaseAndQuestionLevel(String skill, QuestionLevel level);
 }

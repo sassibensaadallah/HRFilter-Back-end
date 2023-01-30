@@ -1,7 +1,6 @@
 package com.adservio.hrfilter.controller;
 import java.util.List;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +15,6 @@ import com.adservio.hrfilter.service.IQuestionService;
 @RestController
 @RequestMapping("/question")
 public class QuestionController {
-
 	@Autowired
 	private IQuestionService questionService;
 	
@@ -25,6 +23,4 @@ public class QuestionController {
 		List<QuestionDTO> listQuestionDTO=this.questionService.getQuestionList(skillsList);
 		return listQuestionDTO;
 	}
-	
-	
 }

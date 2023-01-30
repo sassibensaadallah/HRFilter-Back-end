@@ -42,7 +42,7 @@ public class QuestionServiceImplementation implements IQuestionService {
 		return questionDTOList;
 	}
 	private List<Question> getQuestionList(String skill, QuestionLevel level) {
-		List<Question> questionList= questionRepository.findBySkillAndQuestionLevel(skill,level);
+		List<Question> questionList= questionRepository.findBySkillIgnoreCaseAndQuestionLevel(skill,level);
 		if (questionList.size()>=3) {
 			return questionList.subList(0, 3);
 		}

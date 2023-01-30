@@ -77,6 +77,12 @@ public class PersonData {
 	public void setAverageByEmployer(int averageByEmployer) {
 		this.averageByEmployer = averageByEmployer;
 	}
+	@Override
+	public String toString() {
+		return "PersonData [personId=" + personId + ", name=" + name + ", phoneNumbers=" + phoneNumbers
+				+ ", mailAdresses=" + mailAdresses + ", country=" + country + ", description=" + description
+				+ ", experience=" + experience + ", averageByEmployer=" + averageByEmployer + "]";
+	}
 	
 	
 	

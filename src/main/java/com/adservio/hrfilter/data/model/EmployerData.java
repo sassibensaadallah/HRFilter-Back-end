@@ -1,6 +1,5 @@
 package com.adservio.hrfilter.data.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,10 +12,10 @@ import jakarta.persistence.ManyToOne;
 public class EmployerData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@JsonIgnore
+	
 	private Long employerId;
-	@ManyToOne()
-    @JoinColumn(name="resumeId", nullable=false)
+	@ManyToOne
+    @JoinColumn(name="resumeId", referencedColumnName ="resumeId")
 	private ResumeData resumeData;
 	
 	private String name;
@@ -53,5 +52,12 @@ public class EmployerData {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-
+	public ResumeData getResumeData() {
+		return resumeData;
+	}
+	public void setResumeData(ResumeData resumeData) {
+		this.resumeData = resumeData;
+	}
+	
+	
 }

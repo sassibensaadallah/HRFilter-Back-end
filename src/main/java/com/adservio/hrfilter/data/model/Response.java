@@ -1,9 +1,8 @@
-package com.adservio.hrfilter.model;
+package com.adservio.hrfilter.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +27,4 @@ public class Response {
 	public String getResponseText() {
 		return responseText;
 	}
-	
-	
-	
 }

@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.adservio.hrfilter.data.model.Question;
 import com.adservio.hrfilter.dto.QuestionDTO;
 import com.adservio.hrfilter.enums.QuestionLevel;
-import com.adservio.hrfilter.model.Question;
 import com.adservio.hrfilter.repository.QuestionRepository;
 import com.adservio.hrfilter.service.IQuestionService;
 
@@ -42,7 +42,7 @@ public class QuestionServiceImplementation implements IQuestionService {
 		return questionDTOList;
 	}
 	private List<Question> getQuestionList(String skill, QuestionLevel level) {
-		List<Question> questionList= questionRepository.findBySkillAndQuestionLevel(skill,level);
+		List<Question> questionList= questionRepository.findBySkillIgnoreCaseAndQuestionLevel(skill,level);
 		if (questionList.size()>=3) {
 			return questionList.subList(0, 3);
 		}

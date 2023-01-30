@@ -1,4 +1,4 @@
-package com.adservio.hrfilter.model;
+package com.adservio.hrfilter.data.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.List;
 import com.adservio.hrfilter.enums.QuestionLevel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +29,7 @@ public class Question {
 	private QuestionLevel questionLevel;
 	private int raiting;
 	
-	@OneToMany(mappedBy="question",fetch = FetchType.EAGER)
+	@OneToMany(mappedBy="question",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Response> responseList=new ArrayList<>();
 
 	public Long getQuestionId() {

@@ -3,9 +3,8 @@ package com.adservio.hrfilter.data.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,14 +18,16 @@ import jakarta.persistence.OneToOne;
 public class ResumeData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@JsonIgnore
 	private Long resumeId;
 	private List<String>certifications=new ArrayList<>();
+	@ElementCollection
 	private List<String>languages=new ArrayList<>();
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personId", referencedColumnName = "personId")
 	private PersonData personData ;
+	
+	private String professionalSummary;
 	
 	@OneToMany(mappedBy="resumeData",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	private List<EmployerData> employerList=new ArrayList<>();
@@ -111,9 +112,12 @@ public class ResumeData {
 			educationData.setResumeData(this);
 		}
 	}
-	
-	
-	
-	
-	
+
+	public String getProfessionalSummary() {
+		return professionalSummary;
+	}
+
+	public void setProfessionalSummary(String professionalSummary) {
+		this.professionalSummary = professionalSummary;
+	}	
 }

@@ -1,11 +1,15 @@
 package com.adservio.hrfilter.service.implementation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.adservio.hrfilter.data.model.EducationData;
@@ -14,6 +18,8 @@ import com.adservio.hrfilter.data.model.PersonData;
 import com.adservio.hrfilter.data.model.ResumeData;
 import com.adservio.hrfilter.data.model.SkillDataModel;
 import com.adservio.hrfilter.dto.CVThequeDTO;
+import com.adservio.hrfilter.dto.FindResumeDTO;
+import com.adservio.hrfilter.dto.ResumeDTO;
 import com.adservio.hrfilter.model.Certification;
 import com.adservio.hrfilter.model.EducationDetail;
 import com.adservio.hrfilter.model.Language;
@@ -25,6 +31,12 @@ import com.adservio.hrfilter.model.Taxonomy;
 import com.adservio.hrfilter.model.Telephone;
 import com.adservio.hrfilter.repository.ResumeRepository;
 import com.adservio.hrfilter.service.IResumeService;
+import com.adservio.hrfilter.utils.ResumeSpecificationUtils;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 @Service
 public class ResumeServiceImplementation implements IResumeService {
 	private static final Logger LOG = LoggerFactory.getLogger(ResumeServiceImplementation.class);
@@ -36,6 +48,7 @@ public class ResumeServiceImplementation implements IResumeService {
 	public ResumeData addResume(CVThequeDTO cvDTO) {
 		ResumeData resumeData=new ResumeData();
 		resumeData.setHighestDegree(getHighestDegreeFromDTO(cvDTO));
+		resumeData.setProfessionalSummary(cvDTO.getValue().getResumeData().getProfessionalSummary());
 		resumeData.setLanguages(getLanguagesFromDTO(cvDTO));
 		resumeData.setCertifications(getCertificationsFromDTO(cvDTO));
 		resumeData.setSkills(getSkillsFromDTO(cvDTO));
@@ -48,44 +61,61 @@ public class ResumeServiceImplementation implements IResumeService {
 
 	private List<EducationData> getEducationListFromDTO(CVThequeDTO cvDTO) {
 		List<EducationData> educationDataList=new ArrayList<>();
-		try {
-			for(EducationDetail educationDetail: cvDTO.getValue().getResumeData().getEducation().getEducationDetails()) {
-				EducationData educationData= new EducationData();
-				educationData.setSchoolName(educationDetail.getSchoolName().getNormalized());
-				educationData.setDegree(educationDetail.getDegree().getName().getNormalized());
-				educationData.setDescrption(educationDetail.getText());
-				educationData.setLastDate(educationDetail.getLastEducationDate().getDate());
-				educationDataList.add(educationData);
-				LOG.info("educationData "+educationData.getDescrption());
+		
+			if(cvDTO.getValue().getResumeData().getEducation()!=null) {
+				
+				for(EducationDetail educationDetail: cvDTO.getValue().getResumeData().getEducation().getEducationDetails()) {
+					try {
+						EducationData educationData= new EducationData();
+						if(educationDetail.getSchoolName()!=null)
+							educationData.setSchoolName(educationDetail.getSchoolName().getNormalized());
+						if(educationDetail.getDegree()!=null)
+							educationData.setDegree(educationDetail.getDegree().getName().getNormalized());
+						educationData.setDescrption(educationDetail.getText());
+						if(educationDetail.getLastEducationDate()!=null)
+							educationData.setLastDate(educationDetail.getLastEducationDate().getDate());
+						educationDataList.add(educationData);
+					LOG.info("educationData "+educationData.getDescrption());
+					} catch (Exception e) {
+						LOG.error("Error in setting education "+e);
+					}
+				}
 			}
-		} catch (Exception e) {
-			LOG.error("Error in setting education "+e);
-		}
+		
 		return educationDataList;
 	}
 
 	private List<EmployerData> getEmplyerListFromDTO(CVThequeDTO cvDTO) {
 		List<EmployerData> employerDataList=new ArrayList<>();
-		try {
-			for(Position position: cvDTO.getValue().getResumeData().getEmploymentHistory().getPositions()) {
-				EmployerData employer = new EmployerData();
-				employer.setName(position.getEmployer().getName().getNormalized());
-				employer.setJobTitle(position.getJobTitle().getNormalized());
-				employer.setStartDate(position.getStartDate().getDate());
-				employer.setEndDate(position.getEndDate().getDate());
-				employerDataList.add(employer);
+		
+			if(cvDTO.getValue().getResumeData().getEmploymentHistory()!=null) {
+				for(Position position: cvDTO.getValue().getResumeData().getEmploymentHistory().getPositions()) {
+					try {
+						EmployerData employer = new EmployerData();
+						if(position.getEmployer()!=null&&position.getEmployer().getName()!=null)
+							employer.setName(position.getEmployer().getName().getNormalized());
+						if(position.getJobTitle()!=null)
+							employer.setJobTitle(position.getJobTitle().getNormalized());
+						if(position.getStartDate()!=null)
+							employer.setStartDate(position.getStartDate().getDate());
+						if(position.getEndDate()!=null)
+							employer.setEndDate(position.getEndDate().getDate());
+						employer.setDescription(position.getDescription());
+						employerDataList.add(employer);
+					}
+					catch(Exception e) {
+						LOG.error("Error in setting employment "+e);
+					}
+				}
 			}
-		}
-		catch(Exception e) {
-			LOG.error("Error in setting employment "+e);
-		}
 		return employerDataList;
 	}
 
 	private PersonData getPersonalDataFromDTO(CVThequeDTO cvDTO) {
 		PersonData person=new PersonData();
 		try {
-			person.setName(cvDTO.getValue().getResumeData().getContactInformation().getCandidateName().getFormattedName());
+			person.setFirstName(cvDTO.getValue().getResumeData().getContactInformation().getCandidateName().getGivenName());
+			person.setLastName(cvDTO.getValue().getResumeData().getContactInformation().getCandidateName().getFamilyName());
 			person.setCountry(cvDTO.getValue().getResumeData().getContactInformation().getLocation().getCountryCode());
 			person.setDescription(cvDTO.getValue().getResumeData().getEmploymentHistory().getExperienceSummary().getDescription());
 			person.setExperience(cvDTO.getValue().getResumeData().getEmploymentHistory().getExperienceSummary().getMonthsOfWorkExperience());
@@ -117,7 +147,8 @@ public class ResumeServiceImplementation implements IResumeService {
 					for(Skill skill : subtaxonomy.getSkills()) {
 						SkillDataModel skillDataModel = new SkillDataModel();
 						skillDataModel.setSkillName(skill.getName());
-						skillDataModel.setExperienceInMonth(skill.getMonthsExperience().getValue());
+						if(skill.getMonthsExperience()!=null)
+							skillDataModel.setExperienceInMonth(skill.getMonthsExperience().getValue());
 						skills.add(skillDataModel);
 					}
 					
@@ -164,4 +195,43 @@ public class ResumeServiceImplementation implements IResumeService {
 		return name;
 	}
 
+	@Override
+	public List<ResumeDTO> findAllResumes(FindResumeDTO findResumeDTO) {
+		/**List<String> l=new ArrayList<>();
+		l.add("English");
+		l.add("French");
+		
+		 * filters a appliquer dans findAll
+		 * ResumeSpecificationUtils.skillOfSkills(l).and(ResumeSpecificationUtils.experienceMoreThan(2)).and(ResumeSpecificationUtils.highestDegreeLike("")).and(ResumeSpecificationUtils.elementIsMemberOfListOfString(l))
+		 */
+		List<ResumeData> resumeDataList=resumeRepository.findAll();
+		List<ResumeDTO> resumeDTOList=new ArrayList<>();
+		for (ResumeData resumedata :resumeDataList) {
+			ResumeDTO resumeDTO=new ResumeDTO();
+			resumeDTO.setFirstName(resumedata.getPersonData().getFirstName());
+			resumeDTO.setLastName(resumedata.getPersonData().getLastName());
+			resumeDTO.setJobPosition(resumedata.getProfessionalSummary());
+			resumeDTO.setCreatedBy("nom et prenom");
+			resumeDTO.setResumeId(resumedata.getResumeId());
+			resumeDTOList.add(resumeDTO);
+		}
+		return resumeDTOList;
+	}
+
+	@Override
+	public ResumeData findResumeById(Long id) {
+		Optional<ResumeData> resumeData=resumeRepository.findById(id);
+		return resumeData.orElse(null);
+	}
+
+	@Override
+	public ResumeData setResumeById(Long id, ResumeData resumeData) {
+		resumeRepository.deleteById(id);
+		resumeData.setResumeId(id);
+		return resumeRepository.save(resumeData);
+	}
+	
+	
+	
+	
 }

@@ -2,6 +2,7 @@ package com.adservio.hrfilter.service.implementation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import com.adservio.hrfilter.service.IQuestionService;
 
 @Service
 public class QuestionServiceImplementation implements IQuestionService {
+	Random r=new Random();
 
 	@Autowired
 	private QuestionRepository questionRepository;
@@ -44,7 +46,8 @@ public class QuestionServiceImplementation implements IQuestionService {
 	private List<Question> getQuestionList(String skill, QuestionLevel level) {
 		List<Question> questionList= questionRepository.findBySkillIgnoreCaseAndQuestionLevel(skill,level);
 		if (questionList.size()>=3) {
-			return questionList.subList(0, 3);
+			int random= r.nextInt(questionList.size()-3);
+			return questionList.subList(random, random+3);
 		}
 		return questionList;
 	}

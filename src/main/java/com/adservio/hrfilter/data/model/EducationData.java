@@ -52,9 +52,9 @@ public class EducationData {
 	public void setLastDate(String lastDate) {
 		this.lastDate = lastDate;
 	}
-	public ResumeData getResumeData() {
-		return resumeData;
-	}
+//	public ResumeData getResumeData() {
+//		return resumeData;
+//	}
 	public void setResumeData(ResumeData resumeData) {
 		this.resumeData = resumeData;
 	}

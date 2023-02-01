@@ -18,7 +18,6 @@ public class SkillDataModel {
 	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="resumeId")
 	private ResumeData resumeData;
-	
 	private String skillName;
 	private int experienceInMonth;
 	public Long getSkillDataModelId() {
@@ -39,13 +38,11 @@ public class SkillDataModel {
 	public void setExperienceInMonth(int experienceInMonth) {
 		this.experienceInMonth = experienceInMonth;
 	}
-	public ResumeData getResumeData() {
-		return resumeData;
-	}
+//	public ResumeData getResumeData() {
+//		return resumeData;
+//	}
 	public void setResumeData(ResumeData resumeData) {
 		this.resumeData = resumeData;
 	}
-	
-	
 	
 }

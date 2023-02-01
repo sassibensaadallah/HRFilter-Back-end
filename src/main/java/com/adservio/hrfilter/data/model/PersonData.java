@@ -18,7 +18,8 @@ public class PersonData {
 	@JsonIgnore
 	private Long personId;
 	
-	private String name;
+	private String firstName;
+	private String lastName;
 	private List<String> phoneNumbers=new ArrayList<>();
 	private List<String> mailAdresses=new ArrayList<>();
 	@OneToOne(mappedBy = "personData")
@@ -35,12 +36,7 @@ public class PersonData {
 	public void setPersonId(Long personId) {
 		this.personId = personId;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+	
 	public List<String> getPhoneNumbers() {
 		return phoneNumbers;
 	}
@@ -77,9 +73,23 @@ public class PersonData {
 	public void setAverageByEmployer(int averageByEmployer) {
 		this.averageByEmployer = averageByEmployer;
 	}
+	
+	
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 	@Override
 	public String toString() {
-		return "PersonData [personId=" + personId + ", name=" + name + ", phoneNumbers=" + phoneNumbers
+		return "PersonData [personId=" + personId + ", name=" + firstName + ", phoneNumbers=" + phoneNumbers
 				+ ", mailAdresses=" + mailAdresses + ", country=" + country + ", description=" + description
 				+ ", experience=" + experience + ", averageByEmployer=" + averageByEmployer + "]";
 	}

@@ -2,7 +2,7 @@ package com.adservio.hrfilter.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +18,7 @@ public class QuestionController {
 	@Autowired
 	private IQuestionService questionService;
 	
-	@GetMapping(value="/listBySkill")
+	@PostMapping(value="/listBySkill")
 	public List<QuestionDTO> getQuestionList(@RequestBody List<String> skillsList) {
 		List<QuestionDTO> listQuestionDTO=this.questionService.getQuestionList(skillsList);
 		return listQuestionDTO;

@@ -7,6 +7,7 @@ public class Position {
 	private Name JobTitle;
 	private Date StartDate;
 	private Date EndDate;
+	private String description;
 	public Employer getEmployer() {
 		return employer;
 	}
@@ -43,10 +44,18 @@ public class Position {
 	public void setEndDate(Date endDate) {
 		EndDate = endDate;
 	}
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	@Override
 	public String toString() {
 		return "Position [employer=" + employer + ", IsSelfEmployed=" + IsSelfEmployed + ", IsCurrent=" + IsCurrent
 				+ ", JobTitle=" + JobTitle + ", StartDate=" + StartDate + ", EndDate=" + EndDate + "]";
 	}
+	
 	
 }

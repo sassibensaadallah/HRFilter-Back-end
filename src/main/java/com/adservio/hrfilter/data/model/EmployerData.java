@@ -22,6 +22,7 @@ public class EmployerData {
 	private String jobTitle;
 	private String startDate;
 	private String endDate;
+	private String description;
 	public Long getEmployerId() {
 		return employerId;
 	}
@@ -52,11 +53,17 @@ public class EmployerData {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-	public ResumeData getResumeData() {
-		return resumeData;
-	}
+//	public ResumeData getResumeData() {
+//		return resumeData;
+//	}
 	public void setResumeData(ResumeData resumeData) {
 		this.resumeData = resumeData;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	

@@ -15,11 +15,10 @@ import jakarta.persistence.ManyToOne;
 public class Response {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@JsonIgnore
 	private Long responseId;
 	private String responseText;
 	@ManyToOne()
-    @JoinColumn(name="questionId", nullable=false)
+    @JoinColumn(name="questionId")
 	private Question question;
 	public Long getResponseId() {
 		return responseId;

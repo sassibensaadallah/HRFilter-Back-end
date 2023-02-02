@@ -26,9 +26,9 @@ public class ResumeController {
 	IResumeService resumeService;
 	
 	@PostMapping(value = "/addResume")
-	public ResponseEntity<CVThequeDTO> addResume(@RequestBody CVThequeDTO cVThequeDTO) {
+	public void addResume(@RequestBody CVThequeDTO cVThequeDTO) {
 		resumeService.addResume(cVThequeDTO);
-		return ResponseEntity.ok(null);
+		
 	}
 	@PostMapping(value = "/findResumes")
 	public List<ResumeDTO> findAllResumes(@RequestBody FindResumeDTO findResumeDTO) {

@@ -19,6 +19,7 @@ public class ResumeData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long resumeId;
+	@ElementCollection
 	private List<String>certifications=new ArrayList<>();
 	@ElementCollection
 	private List<String>languages=new ArrayList<>();

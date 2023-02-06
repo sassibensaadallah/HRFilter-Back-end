@@ -1,15 +1,12 @@
 package com.adservio.hrfilter.service.implementation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.adservio.hrfilter.data.model.EducationData;
@@ -33,10 +30,6 @@ import com.adservio.hrfilter.repository.ResumeRepository;
 import com.adservio.hrfilter.service.IResumeService;
 import com.adservio.hrfilter.utils.ResumeSpecificationUtils;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 @Service
 public class ResumeServiceImplementation implements IResumeService {
 	private static final Logger LOG = LoggerFactory.getLogger(ResumeServiceImplementation.class);
@@ -197,14 +190,14 @@ public class ResumeServiceImplementation implements IResumeService {
 
 	@Override
 	public List<ResumeDTO> findAllResumes(FindResumeDTO findResumeDTO) {
-		/**List<String> l=new ArrayList<>();
-		l.add("English");
+		List<String> l=new ArrayList<>();
+		l.add("JAVA");
 		l.add("French");
 		
-		 * filters a appliquer dans findAll
+		 /* filters a appliquer dans findAll
 		 * ResumeSpecificationUtils.skillOfSkills(l).and(ResumeSpecificationUtils.experienceMoreThan(2)).and(ResumeSpecificationUtils.highestDegreeLike("")).and(ResumeSpecificationUtils.elementIsMemberOfListOfString(l))
 		 */
-		List<ResumeData> resumeDataList=resumeRepository.findAll();
+		List<ResumeData> resumeDataList=resumeRepository.findAll(ResumeSpecificationUtils.skillOfSkills(findResumeDTO.getSkills()).and(ResumeSpecificationUtils.experienceMoreThan(findResumeDTO.getExperience())).and(ResumeSpecificationUtils.highestDegreeLike(findResumeDTO.getHighestDegree())).and(ResumeSpecificationUtils.elementIsMemberOfListOfString(findResumeDTO.getCertifications(),"certifications")).and(ResumeSpecificationUtils.elementIsMemberOfListOfString(findResumeDTO.getLanguages(),"languages")));
 		List<ResumeDTO> resumeDTOList=new ArrayList<>();
 		for (ResumeData resumedata :resumeDataList) {
 			ResumeDTO resumeDTO=new ResumeDTO();
@@ -227,7 +220,6 @@ public class ResumeServiceImplementation implements IResumeService {
 	@Override
 	public ResumeData setResumeById(Long id, ResumeData resumeData) {
 		resumeRepository.deleteById(id);
-		resumeData.setResumeId(id);
 		return resumeRepository.save(resumeData);
 	}
 	

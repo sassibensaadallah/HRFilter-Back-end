@@ -5,8 +5,6 @@ import java.util.List;
 
 
 import com.adservio.hrfilter.enums.QuestionLevel;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,12 +18,9 @@ import jakarta.persistence.OneToMany;
 public class Question {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@JsonIgnore
 	private Long questionId;
 	private String questionText;
-	@JsonIgnore
 	private String skill;
-	@JsonIgnore
 	private QuestionLevel questionLevel;
 	private int raiting;
 	

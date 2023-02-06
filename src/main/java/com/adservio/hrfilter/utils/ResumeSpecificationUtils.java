@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.adservio.hrfilter.data.model.ResumeData;
+import com.adservio.hrfilter.data.model.SkillDataModel;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -18,8 +20,10 @@ public class ResumeSpecificationUtils {
 		   @Override
 		   public Predicate toPredicate(Root<ResumeData> root, 
 		                  CriteriaQuery<?> query, 
-		                  CriteriaBuilder criteriaBuilder) {			   
-		     return criteriaBuilder.like(root.get("highestDegree"), "%"+highestDegree+"%");
+		                  CriteriaBuilder criteriaBuilder) {
+			   if(highestDegree!=null)
+				   return criteriaBuilder.like(root.get("highestDegree"), "%"+highestDegree+"%");
+			   return null;
 		   }
 		  };
 		}
@@ -30,19 +34,22 @@ public class ResumeSpecificationUtils {
 		   public Predicate toPredicate(Root<ResumeData> root, 
 		                  CriteriaQuery<?> query, 
 		                  CriteriaBuilder criteriaBuilder) {
-		     return criteriaBuilder.greaterThanOrEqualTo(root.get("personData").get("experience"), experience);
+			   if(experience>0)
+				   return criteriaBuilder.greaterThanOrEqualTo(root.get("personData").get("experience"), experience);
+			   return null;
 		   }
 		  };
 		}
 	
 	
 	
-	public static Specification<ResumeData> elementIsMemberOfListOfString(List<String> list){
+	public static Specification<ResumeData> elementIsMemberOfListOfString(List<String> list, String attributeName){
 		  return new Specification<ResumeData>() {
 		   @Override
 		   public Predicate toPredicate(Root<ResumeData> root, 
 		                  CriteriaQuery<?> query, 
 		                  CriteriaBuilder criteriaBuilder) {
+			   if(list!=null&&!list.isEmpty()) {
 			   List<Predicate> predicates = new ArrayList<>();
 			   for(String element:list) {
 				   predicates.add(criteriaBuilder.isMember(element, root.get("languages")));
@@ -50,6 +57,9 @@ public class ResumeSpecificationUtils {
 		   }
 			   return criteriaBuilder.or(predicates.toArray(new Predicate[] {}));
 		   }
+			   return null;
+		   }
+		   
 		  };
 		}
 //does not work
@@ -62,10 +72,10 @@ public class ResumeSpecificationUtils {
 		                  CriteriaBuilder criteriaBuilder) {
 			   if(skills!=null&&!skills.isEmpty()) {
 					   List<Predicate> predicates = new ArrayList<>();
+					   Join<ResumeData, SkillDataModel> resumeSkills = root.join("skills");
 					   for(String skill:skills) {
-						   predicates.add(criteriaBuilder.isMember(skill, root.get("skills")));
-						   
-				   }
+						   predicates.add(criteriaBuilder.equal(resumeSkills.get("skillName"), skill));   
+					   }
 					   return criteriaBuilder.or(predicates.toArray(new Predicate[] {}));
 			   }
 			   return null;

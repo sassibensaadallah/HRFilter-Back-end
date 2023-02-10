@@ -17,8 +17,6 @@ import com.adservio.hrfilter.data.model.Question;
 import com.adservio.hrfilter.dto.QuestionDTO;
 import com.adservio.hrfilter.service.IQuestionService;
 
-
-
 @RestController
 @RequestMapping("/question")
 public class QuestionController {

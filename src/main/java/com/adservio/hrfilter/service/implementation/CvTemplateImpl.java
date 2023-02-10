@@ -1,34 +1,68 @@
 package com.adservio.hrfilter.service.implementation;
 
 import com.adservio.hrfilter.data.model.CvTemplate;
+import com.adservio.hrfilter.dto.CvTemplateDTO;
 import com.adservio.hrfilter.repository.CVTemplateRepository;
 import com.adservio.hrfilter.service.ICvTemplateService;
+import com.google.api.client.http.ByteArrayContent;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CvTemplateImpl implements ICvTemplateService {
     private CVTemplateRepository cvTemplateRepository;
+    private GoogleCredentialService googleCredentialService;
     @Override
     public CvTemplate getOneCvTemplate(Long id) {
         return cvTemplateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Please enter a correct id!"));
     }
     @Override
-    public Page<CvTemplate> getCvTemplates(int page, int size) {
-        return cvTemplateRepository.findAll(PageRequest.of(page,size));
+    public List<CvTemplateDTO> getCvTemplates() throws GeneralSecurityException, IOException {
+
+        Drive myDrive = googleCredentialService.getDrive();
+        System.out.println(myDrive.files().list().execute());
+        return cvTemplateRepository.findAll()
+                .stream().map(cvTemplate ->{
+                    try {
+                        System.out.println("mon template"+cvTemplate);
+                        Drive.Files.Get file = myDrive.files().get(cvTemplate.getGoogleDriveId());
+                        return CvTemplateDTO.builder()
+                                .template(cvTemplate.getHtml())
+                                .imageName(file.execute().getName())
+                                .image(Base64.getEncoder().encodeToString(
+                                        file.executeMedia().getContent().readAllBytes()
+                                ))
+                                .id(cvTemplate.getId())
+                                .description(cvTemplate.getDescription())
+                                .build();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }}).collect(Collectors.toList());
     }
 
+
     @Override
-    public CvTemplate addOrEditCvTemplate(CvTemplate cvTemplate) {
+    public CvTemplate addOrEditCvTemplate(CvTemplateDTO cvTemplateDTO) throws GeneralSecurityException, IOException {
+        Drive myDrive = googleCredentialService.getDrive();
+        File myFile = new File();
+        myFile.setName(UUID.randomUUID().toString());
+        //myFile.setFileExtension("html");
+        ByteArrayContent byteArrayContent = new ByteArrayContent("[*/*]",cvTemplateDTO.getImage().getBytes());
+        Drive.Files.Create create =myDrive.files().create(myFile, byteArrayContent);
+        File createdFile = create.execute().clone();
+        System.out.println("cvTemplateDTO = " + createdFile);
+        CvTemplate cvTemplate = new CvTemplate(null, cvTemplateDTO.getTemplate(), cvTemplateDTO.getDescription(), createdFile.getId());
         return cvTemplateRepository.save(cvTemplate);
     }
 

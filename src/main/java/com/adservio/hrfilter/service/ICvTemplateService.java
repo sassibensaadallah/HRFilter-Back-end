@@ -1,12 +1,17 @@
 package com.adservio.hrfilter.service;
 
 import com.adservio.hrfilter.data.model.CvTemplate;
+import com.adservio.hrfilter.dto.CvTemplateDTO;
 import org.springframework.data.domain.Page;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.List;
 
 
 public interface ICvTemplateService {
     CvTemplate getOneCvTemplate(Long id);
-    Page<CvTemplate> getCvTemplates(int page, int size);
-    CvTemplate addOrEditCvTemplate(CvTemplate cvTemplate);
+    List<CvTemplateDTO> getCvTemplates() throws GeneralSecurityException, IOException;
+    CvTemplate addOrEditCvTemplate(CvTemplateDTO cvTemplate) throws GeneralSecurityException, IOException;
     void deleteCvTemplate(Long id);
 }

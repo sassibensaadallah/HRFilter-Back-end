@@ -10,6 +10,8 @@ import java.util.List;
 public interface ICvTemplateService {
     CvTemplate getOneCvTemplate(Long id);
     List<CvTemplateDTO> getCvTemplates() throws GeneralSecurityException, IOException;
-    CvTemplate addOrEditCvTemplate(CvTemplateDTO cvTemplate) throws GeneralSecurityException, IOException;
-    void deleteCvTemplate(Long id);
+    CvTemplate addCvTemplate(CvTemplateDTO cvTemplate) throws GeneralSecurityException, IOException;
+
+    CvTemplate updateCvTemplate(CvTemplateDTO cvTemplate) throws GeneralSecurityException, IOException;
+    void deleteCvTemplate(Long id) throws GeneralSecurityException, IOException;
 }

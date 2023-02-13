@@ -9,7 +9,6 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
@@ -53,11 +52,10 @@ public class CvTemplateImpl implements ICvTemplateService {
 
 
     @Override
-    public CvTemplate addOrEditCvTemplate(CvTemplateDTO cvTemplateDTO) throws GeneralSecurityException, IOException {
+    public CvTemplate addCvTemplate(CvTemplateDTO cvTemplateDTO) throws GeneralSecurityException, IOException {
         Drive myDrive = googleCredentialService.getDrive();
         File myFile = new File();
         myFile.setName(UUID.randomUUID().toString());
-        //myFile.setFileExtension("html");
         ByteArrayContent byteArrayContent = new ByteArrayContent("[*/*]",cvTemplateDTO.getImage().getBytes());
         Drive.Files.Create create =myDrive.files().create(myFile, byteArrayContent);
         File createdFile = create.execute().clone();
@@ -67,7 +65,32 @@ public class CvTemplateImpl implements ICvTemplateService {
     }
 
     @Override
-    public void deleteCvTemplate(Long id) {
+    public CvTemplate updateCvTemplate(CvTemplateDTO cvTemplate) throws GeneralSecurityException, IOException {
+        CvTemplate entity = cvTemplateRepository.findById(cvTemplate.getId())
+                .orElseThrow(() -> new RuntimeException("Please enter a correct id!"));
+        entity.setDescription(cvTemplate.getDescription());
+        entity.setHtml(cvTemplate.getTemplate());
+        Drive myDrive = googleCredentialService.getDrive();
+        File myFile = new File();
+        myFile.setName(UUID.randomUUID().toString());
+        ByteArrayContent byteArrayContent = new ByteArrayContent("[*/*]",cvTemplate.getImage().getBytes());
+        Drive.Files.Update update =myDrive.files().update(entity.getGoogleDriveId(), myFile, byteArrayContent);
+        File createdFile = update.execute().clone();
+        System.out.println("cvTemplateDTO = " + createdFile);
+        return cvTemplateRepository.save(
+                new CvTemplate(cvTemplate.getId(), cvTemplate.getTemplate(), cvTemplate.getDescription(), createdFile.getId())
+        );
+
+    }
+
+    @Override
+    public void deleteCvTemplate(Long id) throws GeneralSecurityException, IOException {
+        CvTemplate entity = cvTemplateRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Please enter a correct id!"));
+        Drive myDrive = googleCredentialService.getDrive();
+        File myFile = new File();
+        myFile.setName(UUID.randomUUID().toString());
+        myDrive.files().delete(entity.getGoogleDriveId());
         cvTemplateRepository.deleteById(id);
     }
 }

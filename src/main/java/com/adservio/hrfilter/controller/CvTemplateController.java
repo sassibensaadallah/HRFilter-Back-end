@@ -18,8 +18,6 @@ import java.util.List;
 public class CvTemplateController {
     private ICvTemplateService iCvTemplateService;
 
-    private GoogleCredentialService googleCredentialService;
-
 
     @GetMapping
     public List<CvTemplateDTO> getCvTemplates() throws IOException, GeneralSecurityException {
@@ -33,12 +31,19 @@ public class CvTemplateController {
     }
 
     @PostMapping
-    public CvTemplate getOneTemplate(@RequestBody CvTemplateDTO template) throws IOException, GeneralSecurityException{
-        return iCvTemplateService.addOrEditCvTemplate(template);
+    public CvTemplate createTemplate(@RequestBody CvTemplateDTO template) throws IOException, GeneralSecurityException{
+        template.setId(null);
+        return iCvTemplateService.addCvTemplate(template);
+    }
+
+
+    @PutMapping
+    public CvTemplate updateTemplate(@RequestBody CvTemplateDTO template) throws IOException, GeneralSecurityException{
+        return iCvTemplateService.updateCvTemplate(template);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteOneTemplate(@PathVariable Long id){
+    public void deleteOneTemplate(@PathVariable Long id) throws GeneralSecurityException, IOException {
         iCvTemplateService.deleteCvTemplate(id);
     }
 

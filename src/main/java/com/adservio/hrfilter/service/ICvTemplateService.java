@@ -2,8 +2,6 @@ package com.adservio.hrfilter.service;
 
 import com.adservio.hrfilter.data.model.CvTemplate;
 import com.adservio.hrfilter.dto.CvTemplateDTO;
-import org.springframework.data.domain.Page;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;

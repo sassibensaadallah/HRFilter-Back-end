@@ -1,6 +1,7 @@
 package com.adservio.hrfilter.controller;
 import java.util.List;
 
+import com.adservio.hrfilter.utils.ApiResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,28 +25,74 @@ public class QuestionController {
 	private IQuestionService questionService;
 	
 	@PostMapping(value="/listBySkill")
-	public List<QuestionDTO> getQuestionList(@RequestBody List<String> skillsList) {
-		List<QuestionDTO> listQuestionDTO=this.questionService.getQuestionList(skillsList);
-		return listQuestionDTO;
+	public ResponseEntity<Object> getQuestionList(@RequestBody List<String> skillsList) {
+		try {
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, true,
+							"QUESTION LIST BY SKILLS SUCCESSFULLY GOT",
+							this.questionService.getQuestionList(skillsList));
+		}catch (Exception e){
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, false,
+							e.getMessage(),
+							null);
+		}
 	}
 	@DeleteMapping(value="/deleteById/{id}")
-	public void deleteQuestionById(@PathVariable(name = "id")Long id) {
-		questionService.deleteQuestionById(id);
+	public ResponseEntity<Object>  deleteQuestionById(@PathVariable(name = "id")Long id) {
+		try {
+			questionService.deleteQuestionById(id);
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, true,
+							"QUESTION SUCCESSFULLY DELETED",
+							null);
+		}catch (Exception e){
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, false,
+							e.getMessage(),
+							null);
+		}
 	}
 	@GetMapping(value="/getById/{id}")
-	public ResponseEntity<Question>getQuestionById(@PathVariable(name = "id")Long id) {
-		Question question=questionService.getQuestionById(id);
-		if(question==null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	public ResponseEntity<Object>getQuestionById(@PathVariable(name = "id")Long id) {
+		try {
+			Question question=questionService.getQuestionById(id);
+			if(question==null)
+				return ApiResponseHandler
+						.generateResponse(HttpStatus.NOT_FOUND, true,
+								"NOT_FOUND",
+								null);
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, true,
+							"QUESTION WITH ID:"+ id,
+							question);
+		}catch (Exception e){
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, false,
+							e.getMessage(),
+							null);
 		}
-		return new ResponseEntity<Question>(question,HttpStatus.OK);
 	}
 	@PutMapping(value="/editById/{id}")
-	public ResponseEntity<Question> editQuestionById(@PathVariable(name = "id") Long id, @RequestBody Question question) {
-		Question question1=questionService.editQuestionById(id,question);
-		if(question1!=null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	public ResponseEntity<Object> editQuestionById(@PathVariable(name = "id") Long id, @RequestBody Question question) {
+		try {
+			Question question1=questionService.editQuestionById(id,question);
+			if(question1!=null) {
+				return ApiResponseHandler
+						.generateResponse(HttpStatus.NOT_FOUND, true,
+								"NOT_FOUND",
+								null);
+			}
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, true,
+							"QUESTION SUCCESSFULLY EDITED",
+							question1);
+
+		}catch (Exception e){
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, false,
+							e.getMessage(),
+							null);
 		}
-		return new ResponseEntity<Question>(question1,HttpStatus.OK);
 	}
 }

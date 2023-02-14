@@ -1,15 +1,15 @@
 package com.adservio.hrfilter.controller;
 
-import com.adservio.hrfilter.data.model.CvTemplate;
 import com.adservio.hrfilter.dto.CvTemplateDTO;
 import com.adservio.hrfilter.service.ICvTemplateService;
-import com.adservio.hrfilter.service.implementation.GoogleCredentialService;
+import com.adservio.hrfilter.utils.ApiResponseHandler;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -17,34 +17,79 @@ import java.util.List;
 @Slf4j
 public class CvTemplateController {
     private ICvTemplateService iCvTemplateService;
-
-
     @GetMapping
-    public List<CvTemplateDTO> getCvTemplates() throws IOException, GeneralSecurityException {
-
-        return  iCvTemplateService.getCvTemplates();
+    public ResponseEntity<Object> getCvTemplates(){
+        try {
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, true,
+                            "CV TEMPLATE LIST SUCCESSFULLY GOT",
+                            iCvTemplateService.getCvTemplates());
+        }catch (Exception e){
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, false,
+                            e.getMessage(),
+                            null);
+        }
     }
 
     @GetMapping("/{id}")
-    public CvTemplate getOneTemplate(@PathVariable Long id) {
-        return iCvTemplateService.getOneCvTemplate(id);
+    public ResponseEntity<Object> getOneTemplate(@PathVariable Long id) {
+        try {
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, true,
+                            "CV TEMPLATE WITH ID :"+id,
+                    iCvTemplateService.getOneCvTemplate(id));
+        }catch (Exception e){
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, false,
+                            e.getMessage(),
+                            null);
+        }
     }
 
     @PostMapping
-    public CvTemplate createTemplate(@RequestBody CvTemplateDTO template) throws IOException, GeneralSecurityException{
+    public ResponseEntity<Object> createTemplate(@RequestBody CvTemplateDTO template) throws IOException, GeneralSecurityException{
         template.setId(null);
-        return iCvTemplateService.addCvTemplate(template);
+        try {
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, true,
+                            "CV TEMPLATE SUCCESSFULLY CREATED",
+                            iCvTemplateService.addCvTemplate(template));
+        }catch (Exception e){
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, false,
+                            e.getMessage(),
+                            null);
+        }
     }
-
 
     @PutMapping
-    public CvTemplate updateTemplate(@RequestBody CvTemplateDTO template) throws IOException, GeneralSecurityException{
-        return iCvTemplateService.updateCvTemplate(template);
+    public ResponseEntity<Object> updateTemplate(@RequestBody CvTemplateDTO template) throws IOException, GeneralSecurityException{
+        template.setId(null);
+        try {
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, true,
+                            "CV TEMPLATE SUCCESSFULLY UPDATED",
+                            iCvTemplateService.updateCvTemplate(template));
+        }catch (Exception e){
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, false,
+                            e.getMessage(),
+                            null);
+        }
     }
-
     @DeleteMapping("/{id}")
-    public void deleteOneTemplate(@PathVariable Long id) throws GeneralSecurityException, IOException {
-        iCvTemplateService.deleteCvTemplate(id);
+    public ResponseEntity<Object> deleteOneTemplate(@PathVariable Long id) throws GeneralSecurityException, IOException {
+        try {
+            iCvTemplateService.deleteCvTemplate(id);
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, true,
+                            "CV TEMPLATE SUCCESSFULLY DELETED", null);
+        }catch (Exception e){
+            return ApiResponseHandler
+                    .generateResponse(HttpStatus.OK, false,
+                            e.getMessage(),
+                            null);
+        }
     }
-
 }

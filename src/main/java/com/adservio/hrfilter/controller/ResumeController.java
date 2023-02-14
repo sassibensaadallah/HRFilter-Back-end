@@ -2,7 +2,9 @@ package com.adservio.hrfilter.controller;
 
 import java.util.List;
 
+import com.adservio.hrfilter.utils.ApiResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,22 +28,62 @@ public class ResumeController {
 	IResumeService resumeService;
 	
 	@PostMapping(value = "/addResume")
-	public void addResume(@RequestBody CVThequeDTO cVThequeDTO) {
-		resumeService.addResume(cVThequeDTO);
+	public ResponseEntity<Object> addResume(@RequestBody CVThequeDTO cVThequeDTO) {
+		try {
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, true,
+							"RESUME SUCCESSFULLY ADDED",
+							resumeService.addResume(cVThequeDTO));
+		}catch (Exception e){
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, false,
+							e.getMessage(),
+							null);
 		
+		}
 	}
 	@PostMapping(value = "/findResumes")
-	public List<ResumeDTO> findAllResumes(@RequestBody FindResumeDTO findResumeDTO) {
-		return resumeService.findAllResumes(findResumeDTO);
+	public ResponseEntity<Object> findAllResumes(@RequestBody FindResumeDTO findResumeDTO) {
+		try {
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, true,
+							"RESUME LIST SUCCESSFULLY GOT",
+							resumeService.findAllResumes(findResumeDTO));
+		}catch (Exception e){
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, false,
+							e.getMessage(),
+							null);
+		}
 	}
 
 	@GetMapping(value="/findResume/{id}")
-	public ResumeData findResumeById(@PathVariable(name = "id") Long id) {
-		return resumeService.findResumeById(id);
+	public ResponseEntity<Object> findResumeById(@PathVariable(name = "id") Long id) {
+		try {
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, true,
+							"RESUME WITH ID :"+id,
+							resumeService.findResumeById(id));
+		}catch (Exception e){
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, false,
+							e.getMessage(),
+							null);
+		}
 	}
 	
 	@PutMapping(value="/editResume/{id}")
-	public ResumeData setResumeById(@PathVariable(name = "id") Long id, @RequestBody ResumeData resumeData) {
-		return resumeService.setResumeById(id,resumeData);
+	public  ResponseEntity<Object> setResumeById(@PathVariable(name = "id") Long id, @RequestBody ResumeData resumeData) {
+		try {
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, true,
+							"RESUME SUCCESSFULLY UPDATED",
+							resumeService.setResumeById(id,resumeData));
+		}catch (Exception e){
+			return ApiResponseHandler
+					.generateResponse(HttpStatus.OK, false,
+							e.getMessage(),
+							null);
+		}
 	}
 }

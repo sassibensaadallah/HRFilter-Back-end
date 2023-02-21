@@ -1,4 +1,4 @@
-package com.adservio.hrfilter.service.implementation;
+package com.adservio.hrfilter.drive.service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -16,12 +16,12 @@ import java.util.Collections;
 @Service
 public class GoogleCredentialService {
 
-    public Drive getDrive() throws IOException, GeneralSecurityException {
+    public Drive getDrive(String credentialPath) throws IOException, GeneralSecurityException {
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory jsonFactory =  GsonFactory.getDefaultInstance();
 
         GoogleCredential credential =
-                GoogleCredential.fromStream(new FileInputStream("credentials.json"))
+                GoogleCredential.fromStream(new FileInputStream(credentialPath))
                         .createScoped(Collections.singleton(DriveScopes.DRIVE));
 
         return new Drive.Builder(httpTransport, jsonFactory, credential).build();

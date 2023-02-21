@@ -1,6 +1,6 @@
-package com.adservio.hrfilter.service;
+package com.adservio.hrfilter.drive.service;
 
-import com.adservio.hrfilter.data.model.CvTemplate;
+import com.adservio.hrfilter.drive.entity.CvTemplate;
 import com.adservio.hrfilter.dto.CvTemplateDTO;
 import java.io.IOException;
 import java.security.GeneralSecurityException;

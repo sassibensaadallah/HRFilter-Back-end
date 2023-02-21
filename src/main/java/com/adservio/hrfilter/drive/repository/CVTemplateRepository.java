@@ -1,6 +1,5 @@
-package com.adservio.hrfilter.repository;
+package com.adservio.hrfilter.drive.repository;
 
-import com.adservio.hrfilter.data.model.CvTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

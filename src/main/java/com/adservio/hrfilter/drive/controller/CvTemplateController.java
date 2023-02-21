@@ -1,7 +1,7 @@
-package com.adservio.hrfilter.controller;
+package com.adservio.hrfilter.drive.controller;
 
+import com.adservio.hrfilter.drive.ICvTemplateService;
 import com.adservio.hrfilter.dto.CvTemplateDTO;
-import com.adservio.hrfilter.service.ICvTemplateService;
 import com.adservio.hrfilter.utils.ApiResponseHandler;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

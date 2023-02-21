@@ -1,4 +1,4 @@
-package com.adservio.hrfilter.data.model;
+package com.adservio.hrfilter.drive.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

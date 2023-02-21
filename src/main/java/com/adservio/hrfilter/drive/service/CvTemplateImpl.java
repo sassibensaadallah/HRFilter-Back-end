@@ -1,7 +1,7 @@
 package com.adservio.hrfilter.drive.service;
 
-import com.adservio.hrfilter.drive.CVTemplateRepository;
-import com.adservio.hrfilter.drive.CvTemplate;
+import com.adservio.hrfilter.drive.entity.CvTemplate;
+import com.adservio.hrfilter.drive.repository.CVTemplateRepository;
 import com.adservio.hrfilter.dto.CvTemplateDTO;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.services.drive.Drive;

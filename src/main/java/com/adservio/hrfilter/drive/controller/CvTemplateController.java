@@ -15,7 +15,7 @@ import java.security.GeneralSecurityException;
 @AllArgsConstructor
 @RequestMapping("/cv-templates")
 @Slf4j
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class CvTemplateController {
     private ICvTemplateService iCvTemplateService;
     @GetMapping

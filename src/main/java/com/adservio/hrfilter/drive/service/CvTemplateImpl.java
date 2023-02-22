@@ -29,7 +29,6 @@ public class CvTemplateImpl implements ICvTemplateService {
     public List<CvTemplateDTO> getCvTemplates() throws GeneralSecurityException, IOException {
 
         Drive myDrive = googleCredentialService.getDrive("credentials.json");
-        System.out.println(myDrive.files().list().execute());
         return cvTemplateRepository.findAll()
                 .stream().map(cvTemplate ->{
                     try {

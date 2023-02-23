@@ -66,7 +66,7 @@ public class CvTemplateController {
 
     @PutMapping
     public ResponseEntity<Object> updateTemplate(@RequestBody CvTemplateDTO template) throws IOException, GeneralSecurityException{
-        template.setId(null);
+
         try {
             return ApiResponseHandler
                     .generateResponse(HttpStatus.OK, true,

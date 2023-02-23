@@ -36,7 +36,7 @@ public class CvTemplateImpl implements ICvTemplateService {
                         return CvTemplateDTO.builder()
                                 .template(cvTemplate.getHtml())
                                 .imageName(file.execute().getName())
-                                .image(Base64.getEncoder().encodeToString(
+                                .image("data:image/png;base64,"+Base64.getEncoder().encodeToString(
                                         file.executeMedia().getContent().readAllBytes()
                                 ))
                                 .id(cvTemplate.getId())
@@ -53,15 +53,24 @@ public class CvTemplateImpl implements ICvTemplateService {
         Drive myDrive = googleCredentialService.getDrive("credentials.json");
         File myFile = new File();
         myFile.setName(UUID.randomUUID().toString());
-        ByteArrayContent byteArrayContent = new ByteArrayContent("[*/*]",cvTemplateDTO.getImage().getBytes());
+        String image ="";
+        if(cvTemplateDTO.getImage()!=null){
+            image = cvTemplateDTO.getImage().split(",")[1];
+        }
+        ByteArrayContent byteArrayContent = new ByteArrayContent("[*/*]",Base64.getDecoder().decode(image));
         Drive.Files.Create create =myDrive.files().create(myFile, byteArrayContent);
         File createdFile = create.execute().clone();
+
         CvTemplate cvTemplate = new CvTemplate(null, cvTemplateDTO.getTemplate(), cvTemplateDTO.getDescription(), createdFile.getId());
         return cvTemplateRepository.save(cvTemplate);
     }
 
     @Override
     public CvTemplate updateCvTemplate(CvTemplateDTO cvTemplate) throws GeneralSecurityException, IOException {
+        String image ="";
+        if(cvTemplate.getImage()!=null){
+            image = cvTemplate.getImage().split(",")[1];
+        }
         CvTemplate entity = cvTemplateRepository.findById(cvTemplate.getId())
                 .orElseThrow(() -> new RuntimeException("Please enter a correct id!"));
         entity.setDescription(cvTemplate.getDescription()==null?entity.getDescription():cvTemplate.getDescription());
@@ -69,7 +78,8 @@ public class CvTemplateImpl implements ICvTemplateService {
         Drive myDrive = googleCredentialService.getDrive("credentials.json");
         File myFile = new File();
         myFile.setName(UUID.randomUUID().toString());
-        ByteArrayContent byteArrayContent = new ByteArrayContent("[*/*]",cvTemplate.getImage().getBytes());
+
+        ByteArrayContent byteArrayContent = new ByteArrayContent("[*/*]",Base64.getDecoder().decode(image));
         Drive.Files.Update update =myDrive.files().update(entity.getGoogleDriveId(), myFile, byteArrayContent);
         File createdFile = update.execute().clone();
         return cvTemplateRepository.save(

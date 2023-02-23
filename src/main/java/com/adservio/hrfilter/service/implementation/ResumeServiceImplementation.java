@@ -197,7 +197,12 @@ public class ResumeServiceImplementation implements IResumeService {
 		 /* filters a appliquer dans findAll
 		 * ResumeSpecificationUtils.skillOfSkills(l).and(ResumeSpecificationUtils.experienceMoreThan(2)).and(ResumeSpecificationUtils.highestDegreeLike("")).and(ResumeSpecificationUtils.elementIsMemberOfListOfString(l))
 		 */
-		List<ResumeData> resumeDataList=resumeRepository.findAll(ResumeSpecificationUtils.skillOfSkills(findResumeDTO.getSkills()).and(ResumeSpecificationUtils.experienceMoreThan(findResumeDTO.getExperience())).and(ResumeSpecificationUtils.highestDegreeLike(findResumeDTO.getHighestDegree())).and(ResumeSpecificationUtils.elementIsMemberOfListOfString(findResumeDTO.getCertifications(),"certifications")).and(ResumeSpecificationUtils.elementIsMemberOfListOfString(findResumeDTO.getLanguages(),"languages")));
+		List<ResumeData> resumeDataList=resumeRepository.findAll(ResumeSpecificationUtils
+				.skillOfSkills(findResumeDTO.getSkills())
+				.and(ResumeSpecificationUtils.experienceMoreThan(findResumeDTO.getExperience()))
+				.and(ResumeSpecificationUtils.highestDegreeLike(findResumeDTO.getHighestDegree()))
+				.and(ResumeSpecificationUtils.elementIsMemberOfListOfString(findResumeDTO.getCertifications(),"certifications"))
+				.and(ResumeSpecificationUtils.elementIsMemberOfListOfString(findResumeDTO.getLanguages(),"languages")));
 		List<ResumeDTO> resumeDTOList=new ArrayList<>();
 		for (ResumeData resumedata :resumeDataList) {
 			ResumeDTO resumeDTO=new ResumeDTO();

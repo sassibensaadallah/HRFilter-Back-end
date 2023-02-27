@@ -23,6 +23,7 @@ public class PersonData {
 	private List<String> phoneNumbers=new ArrayList<>();
 	private List<String> mailAdresses=new ArrayList<>();
 	@OneToOne(mappedBy = "personData")
+	@JsonIgnore
 	private ResumeData resumeData;
 	private String country;
 	

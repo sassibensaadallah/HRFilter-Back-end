@@ -9,7 +9,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
+@AllArgsConstructor @NoArgsConstructor
+@Data
 public class SkillDataModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,32 +23,10 @@ public class SkillDataModel {
 	private Long skillDataModelId;
 	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="resumeId")
+	@JsonIgnore
 	private ResumeData resumeData;
 	private String skillName;
 	private int experienceInMonth;
-	public Long getSkillDataModelId() {
-		return skillDataModelId;
-	}
-	public void setSkillDataModelId(Long skillDataModelId) {
-		this.skillDataModelId = skillDataModelId;
-	}
-	public String getSkillName() {
-		return skillName;
-	}
-	public void setSkillName(String skillName) {
-		this.skillName = skillName;
-	}
-	public int getExperienceInMonth() {
-		return experienceInMonth;
-	}
-	public void setExperienceInMonth(int experienceInMonth) {
-		this.experienceInMonth = experienceInMonth;
-	}
-//	public ResumeData getResumeData() {
-//		return resumeData;
-//	}
-	public void setResumeData(ResumeData resumeData) {
-		this.resumeData = resumeData;
-	}
-	
+	private String type;
+
 }

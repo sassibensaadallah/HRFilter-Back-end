@@ -22,6 +22,7 @@ public class ResumeController {
 	@PostMapping(value = "/addResume")
 	public ResponseEntity<Object> addResume(@RequestBody CVThequeDTO cVThequeDTO) {
 		try {
+
 			return ApiResponseHandler
 					.generateResponse(HttpStatus.OK, true,
 							"RESUME SUCCESSFULLY ADDED",
@@ -36,17 +37,17 @@ public class ResumeController {
 	}
 	@PostMapping(value = "/findResumes")
 	public ResponseEntity<Object> findAllResumes(@RequestBody FindResumeDTO findResumeDTO) {
-		try {
+
 			return ApiResponseHandler
 					.generateResponse(HttpStatus.OK, true,
 							"RESUME LIST SUCCESSFULLY GOT",
 							resumeService.findAllResumes(findResumeDTO));
-		}catch (Exception e){
+			/*try {}catch (Exception e){
 			return ApiResponseHandler
 					.generateResponse(HttpStatus.OK, false,
 							e.getMessage(),
 							null);
-		}
+		}*/
 	}
 
 	@GetMapping(value="/findResume/{id}")

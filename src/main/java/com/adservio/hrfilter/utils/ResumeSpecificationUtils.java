@@ -3,6 +3,10 @@ package com.adservio.hrfilter.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.adservio.hrfilter.data.model.Certification;
+import com.adservio.hrfilter.data.model.Language;
+import com.adservio.hrfilter.dto.CertificationDto;
+import com.adservio.hrfilter.dto.LanguageDto;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.adservio.hrfilter.data.model.ResumeData;
@@ -45,23 +49,62 @@ public class ResumeSpecificationUtils {
 	
 	public static Specification<ResumeData> elementIsMemberOfListOfString(List<String> list, String attributeName){
 		  return new Specification<ResumeData>() {
-		   @Override
-		   public Predicate toPredicate(Root<ResumeData> root, 
-		                  CriteriaQuery<?> query, 
-		                  CriteriaBuilder criteriaBuilder) {
-			   if(list!=null&&!list.isEmpty()) {
-			   List<Predicate> predicates = new ArrayList<>();
-			   for(String element:list) {
-				   predicates.add(criteriaBuilder.isMember(element, root.get("languages")));
-				   
-		   }
-			   return criteriaBuilder.or(predicates.toArray(new Predicate[] {}));
-		   }
-			   return null;
-		   }
+			  @Override
+			  public Predicate toPredicate(Root<ResumeData> root,
+							  CriteriaQuery<?> query,
+							  CriteriaBuilder criteriaBuilder) {
+				   if(list!=null&&!list.isEmpty()) {
+					   List<Predicate> predicates = new ArrayList<>();
+					   for(String element:list) {
+						   predicates.add(criteriaBuilder.isMember(element, root.get("languages")));
+
+					   }
+					   return criteriaBuilder.or(predicates.toArray(new Predicate[] {}));
+				   }
+				   return null;
+			  }
 		   
 		  };
-		}
+	}
+
+	public static Specification<ResumeData> elementIsMemberOfListOfCertif(List<CertificationDto> list, String attributeName){
+		return new Specification<ResumeData>() {
+			@Override
+			public Predicate toPredicate(Root<ResumeData> root,
+										 CriteriaQuery<?> query,
+										 CriteriaBuilder criteriaBuilder) {
+				if(list!=null&&!list.isEmpty()) {
+					List<Predicate> predicates = new ArrayList<>();
+					for(CertificationDto element:list) {
+						predicates.add(criteriaBuilder.isMember(element.getName(), root.get("languages")));
+
+					}
+					return criteriaBuilder.or(predicates.toArray(new Predicate[] {}));
+				}
+				return null;
+			}
+
+		};
+	}
+	public static Specification<ResumeData> elementIsMemberOfListOfLangage(List<LanguageDto> list, String attributeName){
+		return new Specification<ResumeData>() {
+			@Override
+			public Predicate toPredicate(Root<ResumeData> root,
+										 CriteriaQuery<?> query,
+										 CriteriaBuilder criteriaBuilder) {
+				if(list!=null&&!list.isEmpty()) {
+					List<Predicate> predicates = new ArrayList<>();
+					for(LanguageDto element:list) {
+						predicates.add(criteriaBuilder.isMember(element.getLanguage(), root.get("languages")));
+
+					}
+					return criteriaBuilder.or(predicates.toArray(new Predicate[] {}));
+				}
+				return null;
+			}
+
+		};
+	}
 //does not work
 	public static Specification<ResumeData> skillOfSkills(List<String> skills){
 		

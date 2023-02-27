@@ -13,20 +13,34 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@AllArgsConstructor @NoArgsConstructor
+@Data
 public class ResumeData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long resumeId;
-	@ElementCollection
+	/*@ElementCollection
 	private List<String>certifications=new ArrayList<>();
 	@ElementCollection
-	private List<String>languages=new ArrayList<>();
+	private List<String>languages=new ArrayList<>();*/
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personId", referencedColumnName = "personId")
 	private PersonData personData ;
+
+	@OneToMany(mappedBy = "resumeData",cascade = CascadeType.ALL)
+	private List<Language> languages;
+
+	@OneToMany(mappedBy = "resumeData",cascade = CascadeType.ALL)
+	private List<Certification> certifications;
+
+
+
 	
 	private String professionalSummary;
 	
@@ -34,91 +48,12 @@ public class ResumeData {
 	private List<EmployerData> employerList=new ArrayList<>();
 	
 	@OneToMany(mappedBy="resumeData",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-	private List<SkillDataModel>skills=new ArrayList<>();
+	private List<SkillDataModel> skills=new ArrayList<>();
 	//HighestDegree from education
 	private String highestDegree;
 	
 	@OneToMany(mappedBy="resumeData",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	private List<EducationData> educationList=new ArrayList<>();
 
-	public Long getResumeId() {
-		return resumeId;
-	}
 
-	public void setResumeId(Long resumeId) {
-		this.resumeId = resumeId;
-	}
-
-	public List<String> getCertifications() {
-		return certifications;
-	}
-
-	public void setCertifications(List<String> certifications) {
-		this.certifications = certifications;
-	}
-
-	public List<String> getLanguages() {
-		return languages;
-	}
-
-	public void setLanguages(List<String> languages) {
-		this.languages = languages;
-	}
-
-	public List<SkillDataModel> getSkills() {
-		return skills;
-	}
-
-	public void setSkills(List<SkillDataModel> skills) {
-		this.skills = skills;
-		for(SkillDataModel skillData:skills) {
-			skillData.setResumeData(this);
-		}
-	}
-
-	public PersonData getPersonData() {
-		return personData;
-	}
-
-	public void setPersonData(PersonData personData) {
-		this.personData = personData;
-	}
-
-	public List<EmployerData> getEmployerList() {
-		return employerList;
-	}
-
-	public void setEmployerList(List<EmployerData> employerList) {
-		this.employerList = employerList;
-		for(EmployerData employerData:employerList) {
-			employerData.setResumeData(this);
-		}
-	}
-
-	public String getHighestDegree() {
-		return highestDegree;
-	}
-
-	public void setHighestDegree(String highestDegree) {
-		this.highestDegree = highestDegree;
-	}
-
-	public List<EducationData> getEducationList() {
-		return educationList;
-	}
-
-	public void setEducationList(List<EducationData> educationList) {
-		this.educationList = educationList;
-		for(EducationData educationData:educationList) {
-			educationData.setResumeData(this);
-		}
-	}
-
-	public String getProfessionalSummary() {
-		return professionalSummary;
-	}
-
-	public void setProfessionalSummary(String professionalSummary) {
-		this.professionalSummary = professionalSummary;
-	}	
 }

@@ -1,6 +1,7 @@
 package com.adservio.hrfilter.data.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +17,7 @@ public class EducationData {
 	private Long educationId;
 	@ManyToOne()
     @JoinColumn(name="resumeId")
+	@JsonIgnore
 	private ResumeData resumeData;
 	
 	private String schoolName;

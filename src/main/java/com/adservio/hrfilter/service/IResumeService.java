@@ -6,10 +6,11 @@ import com.adservio.hrfilter.data.model.ResumeData;
 import com.adservio.hrfilter.dto.CVThequeDTO;
 import com.adservio.hrfilter.dto.FindResumeDTO;
 import com.adservio.hrfilter.dto.ResumeDTO;
+import com.adservio.hrfilter.dto.ResumeDataDto;
 
 public interface IResumeService {
-	ResumeData addResume(CVThequeDTO cv);
+	ResumeDataDto addResume(CVThequeDTO cv);
 	List<ResumeDTO> findAllResumes(FindResumeDTO findResumeDTO);
-	ResumeData findResumeById(Long id);
+	ResumeDataDto findResumeById(Long id);
 	ResumeData setResumeById(Long id, ResumeData resumeData);
 }

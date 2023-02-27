@@ -6,10 +6,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Data @AllArgsConstructor @NoArgsConstructor
-public class SkillData {
-	private List<SkillRow> normalized;
-	
-	
+public class SkillRow {
+    private String id;
+    private String name;
+
+    private String type;
+
+    private Experience monthsExperience;
+    private List<Taxonomy> Taxonomies= new ArrayList<>();
+
 }

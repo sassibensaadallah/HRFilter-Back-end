@@ -2,30 +2,20 @@ package com.adservio.hrfilter.service.implementation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.adservio.hrfilter.data.model.*;
+import com.adservio.hrfilter.dto.*;
+import com.adservio.hrfilter.model.*;
+import com.adservio.hrfilter.repository.CertificationRepository;
+import com.adservio.hrfilter.repository.LanguageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.adservio.hrfilter.data.model.EducationData;
-import com.adservio.hrfilter.data.model.EmployerData;
-import com.adservio.hrfilter.data.model.PersonData;
-import com.adservio.hrfilter.data.model.ResumeData;
-import com.adservio.hrfilter.data.model.SkillDataModel;
-import com.adservio.hrfilter.dto.CVThequeDTO;
-import com.adservio.hrfilter.dto.FindResumeDTO;
-import com.adservio.hrfilter.dto.ResumeDTO;
-import com.adservio.hrfilter.model.Certification;
-import com.adservio.hrfilter.model.EducationDetail;
-import com.adservio.hrfilter.model.Language;
-import com.adservio.hrfilter.model.Position;
-import com.adservio.hrfilter.model.Skill;
-import com.adservio.hrfilter.model.SkillData;
-import com.adservio.hrfilter.model.SubTaxonomy;
-import com.adservio.hrfilter.model.Taxonomy;
-import com.adservio.hrfilter.model.Telephone;
 import com.adservio.hrfilter.repository.ResumeRepository;
 import com.adservio.hrfilter.service.IResumeService;
 import com.adservio.hrfilter.utils.ResumeSpecificationUtils;
@@ -36,20 +26,28 @@ public class ResumeServiceImplementation implements IResumeService {
 
 	@Autowired
 	ResumeRepository resumeRepository;
+	@Autowired
+	private CertificationRepository certificationRepository;
+	@Autowired
+	private LanguageRepository languageRepository;
 
 	@Override
-	public ResumeData addResume(CVThequeDTO cvDTO) {
+	public ResumeDataDto addResume(CVThequeDTO cvDTO) {
 		ResumeData resumeData=new ResumeData();
 		resumeData.setHighestDegree(getHighestDegreeFromDTO(cvDTO));
 		resumeData.setProfessionalSummary(cvDTO.getValue().getResumeData().getProfessionalSummary());
-		resumeData.setLanguages(getLanguagesFromDTO(cvDTO));
-		resumeData.setCertifications(getCertificationsFromDTO(cvDTO));
-		resumeData.setSkills(getSkillsFromDTO(cvDTO));
+		resumeData.setLanguages(cvDTO.getValue().getResumeData().getLanguageCompetencies()
+									.stream().map(languageDto -> new Language(null, languageDto.getFoundInContext(), languageDto.getLanguage(), languageDto.getLanguageCode(), resumeData))
+									.collect(Collectors.toList()));
+		resumeData.setCertifications(cvDTO.getValue().getResumeData().getCertifications()
+									.stream().map(certificationDto -> new Certification(null, certificationDto.isVariation(), certificationDto.getName(), certificationDto.isMatchedFromList(), resumeData))
+									.collect(Collectors.toList()));
+		resumeData.setSkills(getSkillsFromDTO(cvDTO, resumeData));
 		resumeData.setPersonData(getPersonalDataFromDTO(cvDTO));
 		resumeData.setEmployerList(getEmplyerListFromDTO(cvDTO));
 		resumeData.setEducationList(getEducationListFromDTO(cvDTO));
 		resumeRepository.save(resumeData);
-		return resumeData;
+		return toResumeDataDto(resumeData);
 	}
 
 	private List<EducationData> getEducationListFromDTO(CVThequeDTO cvDTO) {
@@ -131,22 +129,36 @@ public class ResumeServiceImplementation implements IResumeService {
 		return phones;
 	}
 
-	private List<SkillDataModel> getSkillsFromDTO(CVThequeDTO cvDTO) {
+	private List<SkillDataModel> getSkillsFromDTO(CVThequeDTO cvDTO, ResumeData resumeData) {
 		List<SkillDataModel> skills=new ArrayList<>();
+		System.out.println("Skill = " + cvDTO.getValue().getResumeData().getSkills());
 		try {
-		for(SkillData skillData: cvDTO.getValue().getResumeData().getSkillsData()) {
-			for(Taxonomy taxonomy :skillData.getTaxonomies()) {
+		for(SkillRow skillData: cvDTO.getValue().getResumeData().getSkills().getNormalized()) {
+			SkillDataModel skillDataModel = new SkillDataModel();
+			skillDataModel.setSkillName(skillData.getName());
+			skillDataModel.setType(skillData.getType());
+			skillDataModel.setResumeData(resumeData);
+			System.out.println("Skill = " + skillData.getName());
+
+			if(skillData.getMonthsExperience()!=null)
+				skillDataModel.setExperienceInMonth(skillData.getMonthsExperience().getValue());
+			skills.add(skillDataModel);
+			/*for(Taxonomy taxonomy :skillData.getTaxonomies()) {
 				for(SubTaxonomy subtaxonomy :taxonomy.getSubTaxonomies()) {
 					for(Skill skill : subtaxonomy.getSkills()) {
 						SkillDataModel skillDataModel = new SkillDataModel();
 						skillDataModel.setSkillName(skill.getName());
+						skillDataModel.setType(skill.getType());
+						skillDataModel.setResumeData(resumeData);
+						System.out.println("Skill = " + skill.getName());
+
 						if(skill.getMonthsExperience()!=null)
 							skillDataModel.setExperienceInMonth(skill.getMonthsExperience().getValue());
 						skills.add(skillDataModel);
 					}
 					
 				}
-			}
+			}*/
 		}
 		}catch(Exception e) {
 			LOG.error("Error in setting Skills "+e);
@@ -154,29 +166,8 @@ public class ResumeServiceImplementation implements IResumeService {
 		return skills;
 	}
 
-	private List<String> getCertificationsFromDTO(CVThequeDTO cvDTO) {
-		List<String> certifications=new ArrayList<>();
-		try {
-		for(Certification certification: cvDTO.getValue().getResumeData().getCertifications()) {
-			certifications.add(certification.getName());
-		}
-		}catch (Exception e) {
-			LOG.error("Error in setting certifications "+e);
-		}
-		return certifications;
-	}
 
-	private List<String> getLanguagesFromDTO(CVThequeDTO cvDTO) {
-		List<String> languages=new ArrayList<>();
-		try {
-		for(Language language: cvDTO.getValue().getResumeData().getLanguageCompetencies()) {
-			languages.add(language.getLanguage());
-		}
-		}catch(Exception e) {
-			LOG.error("Error in setting languages "+e);
-		}
-		return languages;
-	}
+
 
 	private String getHighestDegreeFromDTO(CVThequeDTO cvDTO) {
 		String name="";
@@ -201,15 +192,15 @@ public class ResumeServiceImplementation implements IResumeService {
 				.skillOfSkills(findResumeDTO.getSkills())
 				.and(ResumeSpecificationUtils.experienceMoreThan(findResumeDTO.getExperience()))
 				.and(ResumeSpecificationUtils.highestDegreeLike(findResumeDTO.getHighestDegree()))
-				.and(ResumeSpecificationUtils.elementIsMemberOfListOfString(findResumeDTO.getCertifications(),"certifications"))
-				.and(ResumeSpecificationUtils.elementIsMemberOfListOfString(findResumeDTO.getLanguages(),"languages")));
+				.and(ResumeSpecificationUtils.elementIsMemberOfListOfCertif(findResumeDTO.getCertifications(),"certifications"))
+				.and(ResumeSpecificationUtils.elementIsMemberOfListOfLangage(findResumeDTO.getLanguages(),"languages")));
 		List<ResumeDTO> resumeDTOList=new ArrayList<>();
 		for (ResumeData resumedata :resumeDataList) {
 			ResumeDTO resumeDTO=new ResumeDTO();
 			resumeDTO.setFirstName(resumedata.getPersonData().getFirstName());
 			resumeDTO.setLastName(resumedata.getPersonData().getLastName());
 			resumeDTO.setJobPosition(resumedata.getProfessionalSummary());
-			resumeDTO.setCreatedBy("nom et prenom");
+			resumeDTO.setCreatedBy(null);
 			resumeDTO.setResumeId(resumedata.getResumeId());
 			resumeDTOList.add(resumeDTO);
 		}
@@ -217,18 +208,56 @@ public class ResumeServiceImplementation implements IResumeService {
 	}
 
 	@Override
-	public ResumeData findResumeById(Long id) {
-		Optional<ResumeData> resumeData=resumeRepository.findById(id);
-		return resumeData.orElse(null);
+	public ResumeDataDto findResumeById(Long id) {
+		ResumeDataDto resumeDataDto = new ResumeDataDto();
+		Optional<ResumeData> optResumeData=resumeRepository.findById(id);
+		ResumeData resumeData = optResumeData.orElseThrow(() -> new RuntimeException("NOT FOUND"));
+		resumeDataDto.setHighestDegree(resumeData.getHighestDegree());
+		resumeDataDto.setProfessionalSummary(resumeData.getProfessionalSummary());
+		resumeDataDto.setLanguages(resumeData.getLanguages());
+		resumeDataDto.setCertifications(resumeData.getCertifications());
+		resumeDataDto.setSkills(resumeData.getSkills());
+		resumeDataDto.setPersonData(resumeData.getPersonData());
+		resumeDataDto.setEmployerList(resumeData.getEmployerList());
+		resumeDataDto.setEducationList(resumeData.getEducationList());
+		resumeDataDto.setNewSkills(toNewSkill(resumeData.getSkills()));
+		return resumeDataDto;
 	}
 
 	@Override
 	public ResumeData setResumeById(Long id, ResumeData resumeData) {
-		resumeRepository.deleteById(id);
+		resumeData.setResumeId(id);
 		return resumeRepository.save(resumeData);
 	}
-	
-	
+
+
+	public ResumeDataDto toResumeDataDto(ResumeData resumeData){
+		ResumeDataDto resumeDataDto=new ResumeDataDto();
+		resumeDataDto.setHighestDegree(resumeData.getHighestDegree());
+		resumeDataDto.setProfessionalSummary(resumeData.getProfessionalSummary());
+		resumeDataDto.setLanguages(resumeData.getLanguages());
+		resumeDataDto.setCertifications(resumeData.getCertifications());
+		resumeDataDto.setSkills(resumeData.getSkills());
+		resumeDataDto.setPersonData(resumeData.getPersonData());
+		resumeDataDto.setEmployerList(resumeData.getEmployerList());
+		resumeDataDto.setEducationList(resumeData.getEducationList());
+		resumeDataDto.setNewSkills(toNewSkill(resumeData.getSkills()));
+		return resumeDataDto;
+	}
+
+	public List<SkillDto> toNewSkill(List<SkillDataModel> skills){
+		List<SkillDto> skillDtos = new ArrayList<>();
+		Map<String, List<String>> map =skills.stream()
+				.collect(Collectors.groupingBy(SkillDataModel::getType, Collectors.mapping(SkillDataModel::getSkillName, Collectors.toList())));
+		for(Map.Entry<String, List<String>> entry : map.entrySet()){
+			SkillDto skillDto = new SkillDto(entry.getKey(), entry.getValue());
+			skillDtos.add(skillDto);
+		}
+		return skillDtos;
+	}
+
+
+
 	
 	
 }

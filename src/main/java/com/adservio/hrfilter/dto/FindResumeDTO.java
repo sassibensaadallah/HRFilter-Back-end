@@ -3,22 +3,22 @@ package com.adservio.hrfilter.dto;
 import java.util.List;
 
 public class FindResumeDTO {
-	private List<String> certifications;
-	private List<String> languages;
+	private List<CertificationDto> certifications;
+	private List<LanguageDto> languages;
 	private String highestDegree;
 	private List<String> skills;
 	private int experience;
 	
-	public List<String> getCertifications() {
+	public List<CertificationDto> getCertifications() {
 		return certifications;
 	}
-	public void setCertifications(List<String> certifications) {
+	public void setCertifications(List<CertificationDto> certifications) {
 		this.certifications = certifications;
 	}
-	public List<String> getLanguages() {
+	public List<LanguageDto> getLanguages() {
 		return languages;
 	}
-	public void setLanguages(List<String> languages) {
+	public void setLanguages(List<LanguageDto> languages) {
 		this.languages = languages;
 	}
 	public String getHighestDegree() {

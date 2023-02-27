@@ -13,7 +13,7 @@ import com.adservio.hrfilter.service.IQuestionService;
 
 @RestController
 @RequestMapping("/question")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class QuestionController {
 	@Autowired
 	private IQuestionService questionService;

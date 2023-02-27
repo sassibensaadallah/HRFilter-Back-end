@@ -13,7 +13,7 @@ import com.adservio.hrfilter.service.IResumeService;
 
 @RestController
 @RequestMapping("/resume")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class ResumeController {
 	
 	@Autowired

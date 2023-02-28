@@ -17,7 +17,6 @@ public class EmployerData {
 	private Long employerId;
 	@ManyToOne
     @JoinColumn(name="resumeId", referencedColumnName ="resumeId")
-	@JsonIgnore
 	private ResumeData resumeData;
 	
 	private String name;

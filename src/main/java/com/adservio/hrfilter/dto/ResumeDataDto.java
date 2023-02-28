@@ -14,7 +14,7 @@ import java.util.List;
 public class ResumeDataDto {
     private Long resumeId;
     private PersonData personData ;
-    private List<Language> languages;
+    private List<LanguageDto> languages;
     private List<Certification> certifications;
     private List<EmployerData> employerList=new ArrayList<>();
     private List<SkillDataModel> skills=new ArrayList<>();
@@ -23,4 +23,7 @@ public class ResumeDataDto {
     private List<EducationData> educationList=new ArrayList<>();
     private List<SkillDto> newSkills;
     private String professionalSummary;
+    private String jobPosition;
+
+    private List<String> topSkills;
 }

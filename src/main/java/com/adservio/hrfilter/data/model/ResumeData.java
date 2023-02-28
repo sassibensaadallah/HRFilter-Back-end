@@ -1,8 +1,10 @@
 package com.adservio.hrfilter.data.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -55,5 +57,11 @@ public class ResumeData {
 	@OneToMany(mappedBy="resumeData",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	private List<EducationData> educationList=new ArrayList<>();
 
+	private String jobPosition;
+
+	@ElementCollection
+	private List<String> topSkills = new ArrayList<>();
+
+	private LocalDateTime createdDate;
 
 }

@@ -12,5 +12,5 @@ public interface IResumeService {
 	ResumeDataDto addResume(CVThequeDTO cv);
 	List<ResumeDTO> findAllResumes(FindResumeDTO findResumeDTO);
 	ResumeDataDto findResumeById(Long id);
-	ResumeData setResumeById(Long id, ResumeData resumeData);
+	ResumeData setResumeById(Long id, ResumeDataDto resumeData);
 }

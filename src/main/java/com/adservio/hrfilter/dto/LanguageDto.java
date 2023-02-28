@@ -11,5 +11,6 @@ public class LanguageDto {
 	private String foundInContext;
 	private String language;
 	private String languageCode;
+	private String level;
 
 }

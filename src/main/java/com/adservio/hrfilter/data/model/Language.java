@@ -18,6 +18,7 @@ public class Language {
 	private String foundInContext;
 	private String language;
 	private String languageCode;
+	private String level;
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JsonIgnore
 	private ResumeData resumeData;

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -18,6 +20,8 @@ public class Certification {
 	private boolean isVariation;
 	private String name;
 	private boolean matchedFromList;
+
+	private String date;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JsonIgnore

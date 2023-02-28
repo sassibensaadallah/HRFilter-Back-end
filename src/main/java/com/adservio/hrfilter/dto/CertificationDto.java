@@ -12,6 +12,8 @@ public class CertificationDto {
 	private String name;
 	private boolean matchedFromList;
 
+	private String date;
+
 	
 	
 }

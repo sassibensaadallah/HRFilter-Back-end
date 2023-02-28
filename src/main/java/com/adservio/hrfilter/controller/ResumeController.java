@@ -1,5 +1,6 @@
 package com.adservio.hrfilter.controller;
 
+import com.adservio.hrfilter.dto.ResumeDataDto;
 import com.adservio.hrfilter.utils.ApiResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -66,7 +67,7 @@ public class ResumeController {
 	}
 	
 	@PutMapping(value="/editResume/{id}")
-	public  ResponseEntity<Object> setResumeById(@PathVariable(name = "id") Long id, @RequestBody ResumeData resumeData) {
+	public  ResponseEntity<Object> setResumeById(@PathVariable(name = "id") Long id, @RequestBody ResumeDataDto resumeData) {
 		try {
 			return ApiResponseHandler
 					.generateResponse(HttpStatus.OK, true,
